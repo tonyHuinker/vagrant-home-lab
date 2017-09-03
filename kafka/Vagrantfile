@@ -1,0 +1,36 @@
+#
+#-*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure(2) do |config|
+  config.vm.box = "centos/7"
+  config.ssh.insert_key = false
+
+#  config.vm.provision "shell", inline: <<-EOC
+#    sudo sed -i -e "\\#PasswordAuthentication yes# s#PasswordAuthentication yes#PasswordAuthentication no#g" /etc/ssh/sshd_config
+#    sudo service ssh restart
+#  EOC
+
+(0..2).each do |i|
+    config.vm.define "kafka#{i}" do |kafka|
+      kafka.vm.network "public_network", :dev => "br0", :mac => " 52:54:00:64:59:8#{i}"
+      kafka.vm.provider "libvirt" do |hardware|
+      kafka.vm.hostname = "kafka#{i}.localdomain"
+        if i < 3
+	  #hardware specs
+	  hardware.memory = "2048"
+	  hardware.cpus = "2"
+        end
+        if i > 2
+  	  #hardware specs
+	  hardware.memory = "4096"
+	  hardware.cpus = "2"
+        end
+      end
+    end
+  end
+end

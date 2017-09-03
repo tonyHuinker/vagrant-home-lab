@@ -1,0 +1,20 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure(2) do |config|
+  config.vm.box = "centos/7"
+  config.ssh.insert_key = false
+
+  config.vm.define "socks" do |node|
+    node.vm.network "public_network", :dev => "br0", :mac => "52:54:00:64:60:04"
+    node.vm.provider "libvirt" do |hardware|
+      node.vm.hostname = "socks.localdomain"
+      hardware.memory = "512"
+      hardware.cpus = "1"
+    end
+  end
+end
